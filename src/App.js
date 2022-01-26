@@ -1,5 +1,5 @@
-import "./App.css";
-import Player from "./Player/index";
+import "./App.css"
+import Player from "./Player/index"
 
 function App() {
   return (
@@ -9,4 +9,4 @@ function App() {
   );
 }
 
-export default App;
+export default App
