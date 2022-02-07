@@ -1,34 +1,44 @@
-import React, { useState, useEffect } from "react"
-import debugCastEvents from '../Utils/debugCastEvents'
-/* global dashjs, cast */
-// const PROTOCOL = "urn:x-cast:org.dashif.dashjs";
+/* global cast */
+//['receiverApplicationId'] = '3DB92025' 
 
-const castDebugLogger = cast.debug.CastDebugLogger.getInstance()
+import React, { useState, useEffect } from "react"
+// import debugCastEvents from '../Utils/debugCastEvents'
+// import DebugScreen from "../Utils/DebugScreen"
+import MessageToSender from "./Components/MessageToSender";
+import CastMediaPlayer from "./Components/CastMediaPlayer";
+
+const NAMESPACE =  'urn:x-cast:com.example.cast.events';
 const context = cast.framework.CastReceiverContext.getInstance()
 const playerManager = context.getPlayerManager()
 
-function Player() {
+const Player = () => {
+  const [castState, setCastState] = useState("")
+
+  const updateCastState = (state) => {
+    setCastState(state.type)
+    MessageToSender(NAMESPACE, context, state)
+    //debugCastEvents(state)
+  }
+
   useEffect(() => {
+    // DebugScreen(true)
     playerManager.addEventListener(
       cast.framework.events.category.CORE,
-      debugCastEvents
+      updateCastState
     )
 
-    let DEBUG = true // true = muestra overlay con consola (sobre el video)
-    context.addEventListener(cast.framework.system.EventType.READY, () => {
-      if (!castDebugLogger.debugOverlayElement_) {
-        castDebugLogger.setEnabled(DEBUG)
-        castDebugLogger.showDebugLogs(DEBUG)
-      }
+    context.addCustomMessageListener(NAMESPACE, (customEvent) => {
+      console.log(customEvent)
+      //...TODO
     })
 
     context.start()
   }, [])
 
   return (
-    <div style={{ border: "solid black 1px" }}>
-      <cast-media-player id='player'></cast-media-player>
-    </div>
+    <>
+      <CastMediaPlayer />
+    </>
   )
 }
 
