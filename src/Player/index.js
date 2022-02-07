@@ -17,7 +17,9 @@ const Player = () => {
 
   const updateCastState = (state) => {
     setCastState(state.type)
+   
     debugCastEvents(state)
+    //cast.framework.sendCustomMessage("urn:x-cast:com.example.cast.mynamespace")
   }
 
   useEffect(() => {
